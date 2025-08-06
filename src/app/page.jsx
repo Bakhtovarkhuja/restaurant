@@ -1,15 +1,19 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function Home() {
 	const router = useRouter()
 
-	if(!localStorage.getItem('access_token')){
-		router.push('/auth')
-	}
+	useEffect(() => {
+		const token = localStorage.getItem('access_token')
+		if (!token) {
+			router.push('/auth')
+		}
+	}, [])
 
-	return (
-		<></>
-	)
+	return <>
+		Hello
+	</>
 }
