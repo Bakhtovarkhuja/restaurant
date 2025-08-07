@@ -4,11 +4,11 @@ import { useZapros } from '@/app/store/zapros'
 import { useState } from 'react'
 import { Box, TextField, Button } from '@mui/material'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function Register() {
 	const router = useRouter()
 	const { register } = useZapros()
-	const [error, setError] = useState()
 	const [formData, setFormData] = useState({
 		name: '',
 		surname: '',
@@ -16,23 +16,19 @@ export default function Register() {
 		password: '',
 	})
 
-	const handleChange = (e) => {
+	const handleChange = e => {
 		setFormData({ ...formData, [e.target.name]: e.target.value })
 	}
 
-	const handleSubmitRegister = (e) => {
+	const handleSubmitRegister = e => {
 		e.preventDefault()
 		register(formData)
-		if(localStorage.getItem('access_token')){
-			router.push('/')
-		}else{
-			setError('Этот аккаунт уже существует или нажмите на кнопку ещё раз')
-		}
+		router.push('/login')
 	}
-	
+
 	return (
 		<Box
-			component="form"
+			component='form'
 			onSubmit={handleSubmitRegister}
 			sx={{
 				display: 'flex',
@@ -41,9 +37,9 @@ export default function Register() {
 			}}
 		>
 			<TextField
-				name="name"
-				label="Имя"
-				variant="outlined"
+				name='name'
+				label='Имя'
+				variant='outlined'
 				fullWidth
 				size='small'
 				value={formData.name}
@@ -59,9 +55,9 @@ export default function Register() {
 				}}
 			/>
 			<TextField
-				name="surname"
-				label="Фамилия"
-				variant="outlined"
+				name='surname'
+				label='Фамилия'
+				variant='outlined'
 				fullWidth
 				size='small'
 				value={formData.surname}
@@ -77,10 +73,10 @@ export default function Register() {
 				}}
 			/>
 			<TextField
-				name="number"
-				label="Номер телефона"
-				type="tel"
-				variant="outlined"
+				name='number'
+				label='Номер телефона'
+				type='tel'
+				variant='outlined'
 				fullWidth
 				size='small'
 				value={formData.number}
@@ -96,10 +92,10 @@ export default function Register() {
 				}}
 			/>
 			<TextField
-				name="password"
-				label="Пароль"
-				type="password"
-				variant="outlined"
+				name='password'
+				label='Пароль'
+				type='password'
+				variant='outlined'
 				fullWidth
 				size='small'
 				value={formData.password}
@@ -115,8 +111,8 @@ export default function Register() {
 				}}
 			/>
 			<Button
-				type="submit"
-				variant="contained"
+				type='submit'
+				variant='contained'
 				sx={{
 					mt: 1,
 					backgroundColor: 'white',
@@ -130,9 +126,12 @@ export default function Register() {
 			>
 				Зарегистрироваться
 			</Button>
-			{error && (
-				<p className='text-yellow-300 text-center'>{error}</p>
-			)}
+			<p className='text-blue-50 text-center'>
+				У меня уже есть аккаунт
+				<Link href={'/login '}>
+					<span className='text-red-300 font-bold'> Log In</span>
+				</Link>
+			</p>
 		</Box>
 	)
 }

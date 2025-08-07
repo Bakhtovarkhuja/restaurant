@@ -2,6 +2,7 @@ import Image from 'next/image'
 import registerBg from '@/app/assets/loginPhoto.webp'
 import registerAsidePhoto from '@/app/assets/registerAsidePhoto.jpg'
 import Register from '@/app/components/auth/register'
+import Login from '@/app/components/auth/login'
 
 export default function Page() {
 	return (
@@ -21,14 +22,14 @@ export default function Page() {
 					{/* Левая часть: форма и переключатели */}
 					<div className='w-full md:w-1/2 bg-gradient-to-br from-[#800020] to-[#3d0010] p-8 flex flex-col justify-center text-white gap-6'>
 						{/* Toggle Buttons */}
-						<h1 className='w-[100%] text-center text-white text-[30px]'>Регистрация</h1>
-						<Register />
+						<h1 className='w-[100%] text-center text-white text-[30px]'>Войти</h1>
+						<Login />
 					</div>
 
 					{/* Правая часть: изображение */}
 					<div className='w-full md:w-1/2 relative h-[250px] md:h-auto'>
 						<div className='absolute z-50 md:top-14 md:left-16 top-8 left-10'>
-							<h1 className='text-white text-[35px] md:text-[50px]'>Welcome to</h1>
+							<h1 className='text-white text-[30px] md:text-[40px]'>Добро пожаловать в</h1>
 							<h2 className='text-[#800020] text-[40px] font-bold md:text-[55px]'>BUSTON</h2>
 						</div>
 						<div className='absolute inset-0 bg-black/80 z-10' />
