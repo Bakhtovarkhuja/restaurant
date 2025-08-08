@@ -2,6 +2,8 @@ import axios from 'axios'
 import { create } from 'zustand'
 
 export const useZapros = create((set, get) => ({
+	panding: false,
+	error: false,
 	korgar: null,
 	register: async (newUser) => {
 		try {
@@ -19,9 +21,21 @@ export const useZapros = create((set, get) => ({
 		}
 	},
 	getKorgar: async () => {
+		set({panding: true})
+		set({error: false})
 		try {
 			const { data } = await axios.get('https://b613f1d8b6dbde2f.mokky.dev/korgar')
 			set({korgar: data})
+			set({panding: false})
+		} catch (error) {
+			console.error(error);
+			set({error: true})
+		}
+	},
+	addKorgar: async (newUser) => {
+		try {
+			await axios.post('https://b613f1d8b6dbde2f.mokky.dev/korgar', newUser)
+			get().getKorgar()
 		} catch (error) {
 			console.error(error);
 		}
