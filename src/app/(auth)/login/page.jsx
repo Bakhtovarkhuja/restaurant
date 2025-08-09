@@ -1,10 +1,33 @@
+'use client'
+
 import Image from 'next/image'
 import registerBg from '@/app/assets/loginPhoto.webp'
 import registerAsidePhoto from '@/app/assets/registerAsidePhoto.jpg'
-import Register from '@/app/components/auth/register'
 import Login from '@/app/components/auth/login'
+import { CircularProgress } from '@mui/material'
+import { useZapros } from '@/app/store/zapros'
+import { useRouter } from 'next/navigation'
 
 export default function Page() {
+	const router = useRouter()
+	const { errorr, pandingg, data } = useZapros()
+
+	console.log(errorr);
+
+	console.log(data);
+	
+
+	if(errorr){
+		if(errorr.message == 'Network Error'){
+			alert('Проверьте интернет-соединение')
+		}else{
+			alert('Вы неправильно ввели имя или пароль')
+		}
+	}
+
+	if(data?.token){
+		router.push('/')
+	}
 	return (
 		<div className='w-full min-h-screen relative'>
 			{/* Затемнение фона */}
@@ -42,6 +65,12 @@ export default function Page() {
 					</div>
 				</div>
 			</div>
+
+			{pandingg && (
+				<div className='absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[rgba(0,0,0,0.7)] bg-opacity-50 z-50'>
+					<CircularProgress />
+				</div>
+			)}
 		</div>
 	)
 }

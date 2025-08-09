@@ -9,6 +9,8 @@ import LayersIcon from '@mui/icons-material/Layers';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LoginIcon from '@mui/icons-material/Login';
 // import Header from '@/app/components/layout/header';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useZapros } from '../store/zapros'
 
 const NAVIGATION = [
 //   { kind: 'header', title: 'Основное' },
@@ -46,6 +48,11 @@ function useNextRouter() {
 
 export default function RootLayout({ children }) {
   const router = useNextRouter();
+  const { pandingg, error } = useZapros()
+
+  if (error) {
+    alert('Произошла ошибка при загрузке данных. Пожалуйста, попробуйте позже. Или проверьте соединение.');
+  }
 
   return <>
     <html lang="ru">
@@ -56,6 +63,11 @@ export default function RootLayout({ children }) {
             {children}
           </DashboardLayout>
         </AppProvider>
+        {pandingg && (
+				<div className='absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[rgba(0,0,0,0.7)] bg-opacity-50 z-50'>
+				<CircularProgress />
+				</div>
+			)}
       </body>
     </html>
   </>

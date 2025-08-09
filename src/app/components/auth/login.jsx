@@ -3,13 +3,10 @@
 import { useZapros } from '@/app/store/zapros'
 import { useState } from 'react'
 import { Box, TextField, Button } from '@mui/material'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function Login() {
-	const router = useRouter()
 	const { login } = useZapros()
-	const [error, setError] = useState()
 	const [formData, setFormData] = useState({
 		name: '',
 		password: '',
@@ -22,11 +19,6 @@ export default function Login() {
 	const handleSubmitRegister = (e) => {
 		e.preventDefault()
 		login(formData)
-		if(localStorage.getItem('access_token')){
-			router.push('/')
-		}else{
-			setError('Этот аккаунт уже существует или нажмите на кнопку ещё раз')
-		}
 	}
 	
 	return (
@@ -97,9 +89,6 @@ export default function Login() {
 				 <span className='text-red-300 font-bold'> Register</span>
 				</Link>
 			</p>
-			{error && (
-				<p className='text-yellow-300 text-center'>{error}</p>
-			)}
 		</Box>
 	)
 }

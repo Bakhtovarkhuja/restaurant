@@ -3,11 +3,9 @@
 import { useZapros } from '@/app/store/zapros'
 import { useState } from 'react'
 import { Box, TextField, Button } from '@mui/material'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function Register() {
-	const router = useRouter()
 	const { register } = useZapros()
 	const [formData, setFormData] = useState({
 		name: '',
@@ -23,7 +21,6 @@ export default function Register() {
 	const handleSubmitRegister = e => {
 		e.preventDefault()
 		register(formData)
-		router.push('/login')
 	}
 
 	return (

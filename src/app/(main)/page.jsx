@@ -9,6 +9,7 @@ import Image from 'next/image'
 import shashlik from '@/app/assets/shashlik.jpg'
 import afisant from '@/app/assets/afisant.jpeg'
 import chef from '@/app/assets/chef.jpg'
+import pasuda from '@/app/assets/pasida.avif'
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 import CakeIcon from '@mui/icons-material/Cake'
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone'
@@ -24,36 +25,86 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import Skeleton from '@mui/material/Skeleton'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditSquareIcon from '@mui/icons-material/EditSquare'
+
 
 export default function Home() {
 	const router = useRouter()
-	const { korgar, getKorgar, addKorgar, panding, error } = useZapros()
+	const { korgar, getKorgar, addKorgar, panding, delKorgar, editKorgar } = useZapros()
+	// search
 	const [search, setSearch] = useState('')
+	// add
 	const [open, setOpen] = useState(false)
 	const [age, setAge] = useState('')
 	const [kor, setKor] = useState('')
 	const [pol, setPol] = useState('')
+	// delate
+	const [users, setUsers] = useState(null)
+	const [openn, setOpenn] = useState(false)
+	// edit
+	const [idx, setIdx] = useState(null)
+	const [name, setName] = useState('')
+	const [surname, setSurname] = useState('')
+	const [number, setNumber] = useState('')
+	const [openEditModal, setOpenEditModal] = useState(false)
 
+	const handleChangeUser = () => {
+		const newUser = {
+			id: idx,
+			name: name,
+			surname: surname,
+			number: number,
+			age: age,
+			gander: pol,
+			job: kor
+		}
+
+		editKorgar(idx, newUser)
+		setOpenEditModal(false)
+		setAge('')
+		setKor('')
+		setPol('')
+	}
+	const handleEdit = (el) => {
+		setIdx(el.id)
+		setName(el.name)
+		setSurname(el.surname)
+		setNumber(el.number)
+		setKor(el.job)
+		setPol(el.gander)
+		setAge(el.age)
+		setOpenEditModal(true)
+	}
+	const handleDelUsers = () => {
+		delKorgar(users?.id)
+		setOpenn(false)
+		setUsers(null)
+	}
+	const handleDelUser = el => {
+		setOpenn(true)
+		setUsers(el)
+	}
 	const handleChange = event => {
 		setAge(event.target.value)
 	}
-
 	const handleChangeKor = event => {
 		setKor(event.target.value)
 	}
-
 	const handleChangePol = event => {
 		setPol(event.target.value)
 	}
-
 	const handleClickOpen = () => {
 		setOpen(true)
 	}
-
 	const handleClose = () => {
 		setOpen(false)
+		setOpenn(false)
+		setOpenEditModal(false)
+		setAge('')
+		setKor('')
+		setPol('')
 	}
-
 	const handleSubmit = event => {
 		event.preventDefault()
 
@@ -74,7 +125,6 @@ export default function Home() {
 		setPol('')
 		setOpen(false)
 	}
-
 	useEffect(() => {
 		const token = localStorage.getItem('access_token')
 		if (!token) {
@@ -83,7 +133,6 @@ export default function Home() {
 
 		getKorgar()
 	}, [])
-
 	if (panding) {
 		return (
 			<>
@@ -172,6 +221,24 @@ export default function Home() {
 										className='object-cover'
 									/>
 								)}
+								{el.job === 'посудомойщик' && (
+									<Image
+										src={pasuda}
+										alt='shashlik'
+										fill
+										className='object-cover'
+									/>
+								)}
+							</div>
+
+							<div className='absolute bottom-[10px] right-[10px] flex flex-col cursor-pointer'>
+								<EditSquareIcon onClick={() => handleEdit(el)}
+									sx={{ width: '20px', color: 'skyblue' }}
+								></EditSquareIcon>
+								<DeleteIcon
+									onClick={() => handleDelUser(el)}
+									sx={{ width: '20px', color: 'red' }}
+								></DeleteIcon>
 							</div>
 
 							{/* Фото пользователя — поверх фоновой картинки */}
@@ -365,6 +432,7 @@ export default function Home() {
 									<MenuItem value='официантка'>Официантка</MenuItem>
 									<MenuItem value='повар'>Повар</MenuItem>
 									<MenuItem value='шашлыкпаз'>Шашлыкпаз</MenuItem>
+									<MenuItem value='посудомойщик'>Посудомойщик</MenuItem>
 								</Select>
 							</FormControl>
 							<FormControl
@@ -403,6 +471,288 @@ export default function Home() {
 					</Button>
 					<Button type='submit' form='subscription-form'>
 						Добавить
+					</Button>
+				</DialogActions>
+			</Dialog>
+
+			<Dialog open={openn} onClose={handleClose}>
+				<DialogTitle>Вы точно хотите удалить этого работника?</DialogTitle>
+				<DialogContent>
+					{users && (
+
+						<div
+						key={users.id}
+						className='w-full bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden relative transition duration-300 hover:shadow-lg'
+						>
+						{/* Верхняя фон-картинка */}
+						<div className='relative h-[80px] w-full overflow-hidden rounded-t-xl'>
+							{users.job === 'повар' && (
+								<Image src={chef} alt='chef' fill className='object-cover' />
+							)}
+							{users.job === 'официантка' && (
+								<Image
+								src={afisant}
+								alt='afisant'
+								fill
+								className='object-cover'
+								/>
+							)}
+							{users.job === 'шашлыкпаз' && (
+								<Image
+								src={shashlik}
+								alt='shashlik'
+								fill
+								className='object-cover'
+								/>
+							)}
+							{users.job === 'посудомойщик' && (
+								<Image
+								src={pasuda}
+								alt='shashlik'
+								fill
+								className='object-cover'
+								/>
+							)}
+						</div>
+
+						{/* Фото пользователя — поверх фоновой картинки */}
+						<div className='absolute top-[40px] left-1/2 transform -translate-x-1/2 z-10'>
+							{users.gander === 'male' ? (
+								<Image
+								src={user}
+								alt='user'
+								width={75}
+								height={75}
+								className='rounded-full border-4 border-white shadow-md'
+								/>
+							) : (
+								<Image
+								src={user1}
+								alt='user1'
+								width={75}
+								height={75}
+								className='rounded-full border-4 border-white shadow-md'
+								/>
+							)}
+						</div>
+
+						{/* Контент */}
+						<div className='pt-[50px] px-4 pb-4'>
+							<p className='font-bold text-gray-800 text-[16px] mb-2'>
+								{users.surname + ' ' + users.name}
+							</p>
+
+							<div className='flex items-center gap-2 text-gray-600 text-sm mb-1'>
+								<AssignmentIndIcon sx={{ width: 20 }} />
+								<p>{users.job}</p>
+							</div>
+
+							<div className='flex items-center gap-2 text-gray-600 text-sm mb-1'>
+								<CakeIcon sx={{ width: 20 }} />
+								<p>{users.age} сола</p>
+							</div>
+
+							<div className='flex items-center gap-2 text-rose-700 text-sm font-medium'>
+								<PhoneIphoneIcon sx={{ width: 20 }} />
+								<p>{users.number}</p>
+							</div>
+						</div>
+					</div>
+					)}
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleClose} sx={{ color: 'red' }}>
+						Отмена
+					</Button>
+					<Button form='subscription-form' onClick={handleDelUsers}>Удалить</Button>
+				</DialogActions>
+			</Dialog>
+
+			<Dialog open={openEditModal} onClose={handleClose}>
+				<DialogTitle>Изменить данные работника</DialogTitle>
+				<DialogContent>
+						<TextField
+							autoFocus
+							required
+							margin='dense'
+							id='name'
+							value={name}
+							onChange={e => setName(e.target.value)}
+							label='Имя'
+							type='text'
+							fullWidth
+							variant='standard'
+						/>
+						<TextField
+							autoFocus
+							required
+							margin='dense'
+							id='surname'
+							value={surname}
+							onChange={e => setSurname(e.target.value)}
+							label='Фамилия'
+							type='text'
+							fullWidth
+							variant='standard'
+						/>
+						<TextField
+							autoFocus
+							required
+							margin='dense'
+							id='number'
+							value={number}
+							onChange={(e) => setNumber(e.target.value)}
+							label='Телефон'
+							type='number'
+							fullWidth
+							variant='standard'
+						/>
+						<div className='flex gap-[15px] w-[100%]'>
+							<FormControl
+								variant='standard'
+								sx={{
+									m: 1,
+									minWidth: {
+										xs: '23%',
+										sm: '29%',
+									},
+								}}
+							>
+								<InputLabel id='demo-simple-select-standard-label'>
+									Возраст
+								</InputLabel>
+								<Select
+									labelId='demo-simple-select-standard-label'
+									id='demo-simple-select-standard'
+									value={age}
+									onChange={handleChange}
+									label='Возраст'
+								>
+									<MenuItem value=''>
+										<em>Нет</em>
+									</MenuItem>
+									<MenuItem value={15}>15 лет</MenuItem>
+									<MenuItem value={16}>16 лет</MenuItem>
+									<MenuItem value={17}>17 лет</MenuItem>
+									<MenuItem value={18}>18 лет</MenuItem>
+									<MenuItem value={19}>19 лет</MenuItem>
+									<MenuItem value={20}>20 лет</MenuItem>
+									<MenuItem value={21}>21 лет</MenuItem>
+									<MenuItem value={22}>22 лет</MenuItem>
+									<MenuItem value={23}>23 лет</MenuItem>
+									<MenuItem value={24}>24 лет</MenuItem>
+									<MenuItem value={25}>25 лет</MenuItem>
+									<MenuItem value={26}>26 лет</MenuItem>
+									<MenuItem value={27}>27 лет</MenuItem>
+									<MenuItem value={28}>28 лет</MenuItem>
+									<MenuItem value={29}>29 лет</MenuItem>
+									<MenuItem value={30}>30 лет</MenuItem>
+									<MenuItem value={31}>31 лет</MenuItem>
+									<MenuItem value={32}>32 лет</MenuItem>
+									<MenuItem value={33}>33 лет</MenuItem>
+									<MenuItem value={34}>34 лет</MenuItem>
+									<MenuItem value={35}>35 лет</MenuItem>
+									<MenuItem value={36}>36 лет</MenuItem>
+									<MenuItem value={37}>37 лет</MenuItem>
+									<MenuItem value={38}>38 лет</MenuItem>
+									<MenuItem value={39}>39 лет</MenuItem>
+									<MenuItem value={40}>40 лет</MenuItem>
+									<MenuItem value={41}>41 лет</MenuItem>
+									<MenuItem value={42}>42 лет</MenuItem>
+									<MenuItem value={43}>43 лет</MenuItem>
+									<MenuItem value={44}>44 лет</MenuItem>
+									<MenuItem value={45}>45 лет</MenuItem>
+									<MenuItem value={46}>46 лет</MenuItem>
+									<MenuItem value={47}>47 лет</MenuItem>
+									<MenuItem value={48}>48 лет</MenuItem>
+									<MenuItem value={49}>49 лет</MenuItem>
+									<MenuItem value={50}>50 лет</MenuItem>
+									<MenuItem value={51}>51 лет</MenuItem>
+									<MenuItem value={52}>52 лет</MenuItem>
+									<MenuItem value={53}>53 лет</MenuItem>
+									<MenuItem value={54}>54 лет</MenuItem>
+									<MenuItem value={55}>55 лет</MenuItem>
+									<MenuItem value={56}>56 лет</MenuItem>
+									<MenuItem value={57}>57 лет</MenuItem>
+									<MenuItem value={58}>58 лет</MenuItem>
+									<MenuItem value={59}>59 лет</MenuItem>
+									<MenuItem value={60}>60 лет</MenuItem>
+									<MenuItem value={61}>61 лет</MenuItem>
+									<MenuItem value={62}>62 лет</MenuItem>
+									<MenuItem value={63}>63 лет</MenuItem>
+									<MenuItem value={64}>64 лет</MenuItem>
+									<MenuItem value={65}>65 лет</MenuItem>
+									<MenuItem value={66}>66 лет</MenuItem>
+									<MenuItem value={67}>67 лет</MenuItem>
+									<MenuItem value={68}>68 лет</MenuItem>
+									<MenuItem value={69}>69 лет</MenuItem>
+									<MenuItem value={70}>70 лет</MenuItem>
+								</Select>
+							</FormControl>
+							<FormControl
+								variant='standard'
+								sx={{
+									m: 1,
+									minWidth: {
+										xs: '23%',
+										sm: '29%',
+									},
+								}}
+							>
+								<InputLabel id='demo-simple-select-standard-label'>
+									Должность
+								</InputLabel>
+								<Select
+									labelId='demo-simple-select-standard-label'
+									id='demo-simple-select-standard'
+									value={kor}
+									onChange={handleChangeKor}
+									label='Должность'
+								>
+									<MenuItem value=''>
+										<em>Нет</em>
+									</MenuItem>
+									<MenuItem value='официантка'>Официантка</MenuItem>
+									<MenuItem value='повар'>Повар</MenuItem>
+									<MenuItem value='шашлыкпаз'>Шашлыкпаз</MenuItem>
+									<MenuItem value='посудомойщик'>Посудомойщик</MenuItem>
+								</Select>
+							</FormControl>
+							<FormControl
+								variant='standard'
+								sx={{
+									m: 1,
+									minWidth: {
+										xs: '23%',
+										sm: '29%',
+									},
+								}}
+							>
+								<InputLabel id='demo-simple-select-standard-label'>
+									Пол
+								</InputLabel>
+								<Select
+									labelId='demo-simple-select-standard-label'
+									id='demo-simple-select-standard'
+									value={pol}
+									onChange={handleChangePol}
+									label='Пол'
+								>
+									<MenuItem value=''>
+										<em>Нет</em>
+									</MenuItem>
+									<MenuItem value='male'>Мужчина</MenuItem>
+									<MenuItem value='fimale'>Женщина</MenuItem>
+								</Select>
+							</FormControl>
+						</div>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleClose} sx={{ color: 'red' }}>
+						Отмена
+					</Button>
+					<Button form='subscription-form' onClick={handleChangeUser}>
+						Изменить 
 					</Button>
 				</DialogActions>
 			</Dialog>
