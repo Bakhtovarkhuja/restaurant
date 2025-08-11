@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+.card {
+  opacity: 0;
+  transform: translateZ(0);
+  animation: fadeInUp 0.5s forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateZ(30px);
+  }
+}

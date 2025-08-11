@@ -173,20 +173,22 @@ export default function Home() {
 
 	return (
 		<>
-			<div
-				onClick={handleClickOpen}
-				className='p-[25px] rounded-[50%] bg-blue-400 w-[50px] h-[50px] flex items-center justify-center text-white absolute bottom-[15px] right-[15px] md:bottom-[50px] md:right-[50px] z-50'
-			>
-				<PersonAddAltIcon />
-			</div>
-			<section className='pt-[30px] px-[30px]'>
+		<div className='pt-[30px] px-[30px] flex items-start justify-between'>
+			<section>
 				<TextField
 					label='Search...'
 					variant='standard'
 					value={search}
 					onChange={e => setSearch(e.target.value)}
-				/>
+					/>
 			</section>
+			<div
+				onClick={handleClickOpen}
+				className='p-[25px] rounded-[50%] bg-blue-400 w-[50px] h-[50px] flex items-center justify-center text-white'
+			>
+				<PersonAddAltIcon />
+			</div>
+					</div>
 			<section className='p-[30px] flex flex-wrap gap-[25px]'>
 				{korgar
 					?.filter(el =>
