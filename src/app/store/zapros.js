@@ -9,6 +9,7 @@ export const useZapros = create((set, get) => ({
 	panding: false,
 	error: false,
 	korgar: null,
+	shashlik: null,
 	register: async newUser => {
 		set({ errorrr: false })
 		set({ pandingg: true })
@@ -93,4 +94,12 @@ export const useZapros = create((set, get) => ({
 			set({ pandingg: false })
 		}
 	},
+	getShashlik: async () => {
+		try {
+			const { data } = await axios.get('https://b613f1d8b6dbde2f.mokky.dev/shashlik')
+			set({ shashlik: data })
+		} catch (error) {
+			console.error(error);
+		}
+	}
 }))
